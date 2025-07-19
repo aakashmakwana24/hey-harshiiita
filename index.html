@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rose Petals</title>
+  <style>
+    body {
+      margin: 0;
+      background: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h2 {
+      margin-top: 40px;
+      color: #444;
+    }
+
+    .rose {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      margin: 40px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .petal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center center;
+      border-radius: 60% 40% 70% 30%;
+      background: radial-gradient(ellipse at 30% 30%, #ff4757, #c44569, #8b0000);
+      box-shadow: 0 4px 12px rgba(139, 0, 0, 0.3);
+      cursor: pointer;
+      transition: all 0.4s ease-out;
+      border: 1px solid rgba(139, 0, 0, 0.2);
+    }
+
+    .petal:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+    }
+
+    /* Outer layer petals - largest */
+    .outer-petal {
+      width: 90px;
+      height: 120px;
+      background: linear-gradient(135deg, #dc143c 0%, #b71c1c 50%, #8b0000 100%);
+      z-index: 1;
+    }
+
+    /* Middle layer petals */
+    .middle-petal {
+      width: 75px;
+      height: 100px;
+      background: linear-gradient(135deg, #ff1744 0%, #d32f2f 50%, #b71c1c 100%);
+      z-index: 2;
+    }
+
+    /* Inner layer petals */
+    .inner-petal {
+      width: 60px;
+      height: 80px;
+      background: linear-gradient(135deg, #ff5252 0%, #f44336 50%, #d32f2f 100%);
+      z-index: 3;
+    }
+
+    /* Center petals - smallest */
+    .center-petal {
+      width: 45px;
+      height: 65px;
+      background: linear-gradient(135deg, #ff8a80 0%, #ff5252 50%, #f44336 100%);
+      z-index: 4;
+    }
+
+    /* Rose center */
+    .rose-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 25px;
+      height: 25px;
+      background: radial-gradient(circle at center, #8b4513 0%, #654321 30%, #3e2723 70%, #1c0e0a 100%);
+      border-radius: 50%;
+      z-index: 5;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(139, 0, 0, 0.3);
+    }
+
+    .plucked {
+      transform: translate(-50%, -50%) scale(0) rotate(360deg) !important;
+      opacity: 0;
+    }
+
+    /* Enhanced popup styles from second HTML */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, #ff1744, #e91e63);
+      color: white;
+      padding: 40px 60px;
+      border-radius: 20px;
+      font-size: 2.5rem;
+      font-weight: bold;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      z-index: 1000;
+      opacity: 0;
+      scale: 0;
+      transition: all 0.5s ease;
+      display: none;
+    }
+
+    .popup.show {
+      display: block;
+      opacity: 1;
+      scale: 1;
+      animation: bounceIn 0.8s ease-out;
+    }
+
+    @keyframes bounceIn {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.2);
+      }
+      70% {
+        transform: translate(-50%, -50%) scale(0.9);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+</head>
+<body>
+  <h2>Click on the petals to pluck them! 🌹</h2>
+
+  <div class="rose" id="rose">
+    <!-- Outer petals - 8 petals, largest layer -->
+    <div class="petal outer-petal" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-80px);"></div>
+    <div class="petal outer-petal" style="transform: translate(-50%, -50%) rotate(45deg) translateY(-80px);"></div>
+    <div class="petal outer-petal" style="transform: translate(-50%, -50%) rotate(90deg) translateY(-80px);"></div>
+    <div class="petal outer-petal" style="transform: translate(-50%, -50%) rotate(135deg) translateY(-80px);"></div>
+    <div class="petal outer-petal" style="transform: translate(-50%, -50%) rotate(180deg) translateY(-80px);"></div>
+    <div class="petal outer-petal" style="transform: translate(-50%, -50%) rotate(225deg) translateY(-80px);"></div>
+    <div class="petal outer-petal" style="transform: translate(-50%, -50%) rotate(270deg) translateY(-80px);"></div>
+    <div class="petal outer-petal" style="transform: translate(-50%, -50%) rotate(315deg) translateY(-80px);"></div>
+
+    <!-- Middle petals - 8 petals, offset for layering -->
+    <div class="petal middle-petal" style="transform: translate(-50%, -50%) rotate(22.5deg) translateY(-65px);"></div>
+    <div class="petal middle-petal" style="transform: translate(-50%, -50%) rotate(67.5deg) translateY(-65px);"></div>
+    <div class="petal middle-petal" style="transform: translate(-50%, -50%) rotate(112.5deg) translateY(-65px);"></div>
+    <div class="petal middle-petal" style="transform: translate(-50%, -50%) rotate(157.5deg) translateY(-65px);"></div>
+    <div class="petal middle-petal" style="transform: translate(-50%, -50%) rotate(202.5deg) translateY(-65px);"></div>
+    <div class="petal middle-petal" style="transform: translate(-50%, -50%) rotate(247.5deg) translateY(-65px);"></div>
+    <div class="petal middle-petal" style="transform: translate(-50%, -50%) rotate(292.5deg) translateY(-65px);"></div>
+    <div class="petal middle-petal" style="transform: translate(-50%, -50%) rotate(337.5deg) translateY(-65px);"></div>
+
+    <!-- Inner petals - 6 petals, tighter arrangement -->
+    <div class="petal inner-petal" style="transform: translate(-50%, -50%) rotate(0deg) translateY(-45px);"></div>
+    <div class="petal inner-petal" style="transform: translate(-50%, -50%) rotate(60deg) translateY(-45px);"></div>
+    <div class="petal inner-petal" style="transform: translate(-50%, -50%) rotate(120deg) translateY(-45px);"></div>
+    <div class="petal inner-petal" style="transform: translate(-50%, -50%) rotate(180deg) translateY(-45px);"></div>
+    <div class="petal inner-petal" style="transform: translate(-50%, -50%) rotate(240deg) translateY(-45px);"></div>
+    <div class="petal inner-petal" style="transform: translate(-50%, -50%) rotate(300deg) translateY(-45px);"></div>
+
+    <!-- Center petals - 6 petals, innermost layer -->
+    <div class="petal center-petal" style="transform: translate(-50%, -50%) rotate(30deg) translateY(-25px);"></div>
+    <div class="petal center-petal" style="transform: translate(-50%, -50%) rotate(90deg) translateY(-25px);"></div>
+    <div class="petal center-petal" style="transform: translate(-50%, -50%) rotate(150deg) translateY(-25px);"></div>
+    <div class="petal center-petal" style="transform: translate(-50%, -50%) rotate(210deg) translateY(-25px);"></div>
+    <div class="petal center-petal" style="transform: translate(-50%, -50%) rotate(270deg) translateY(-25px);"></div>
+    <div class="petal center-petal" style="transform: translate(-50%, -50%) rotate(330deg) translateY(-25px);"></div>
+
+  </div>
+
+  <!-- Enhanced popup with overlay -->
+  <div class="overlay" id="overlay"></div>
+  <div class="popup" id="popup">
+    Heyy Harshiiita💖
+  </div>
+
+  <script>
+    const petals = document.querySelectorAll('.petal');
+    let totalPetals = petals.length;
+
+    petals.forEach(petal => {
+      petal.addEventListener('click', () => {
+        petal.classList.add('plucked');
+        setTimeout(() => {
+          petal.remove();
+          totalPetals--;
+          if (totalPetals === 0) {
+            showMessage();
+          }
+        }, 400);
+      });
+    });
+
+    function showMessage() {
+      const overlay = document.getElementById('overlay');
+      const popup = document.getElementById('popup');
+      
+      overlay.classList.add('show');
+      popup.classList.add('show');
+
+      // Add sparkle effects
+      createSparkles();
+    }
+
+    function createSparkles() {
+      for (let i = 0; i < 20; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.style.position = 'fixed';
+        sparkle.style.width = '4px';
+        sparkle.style.height = '4px';
+        sparkle.style.background = '#ffd700';
+        sparkle.style.borderRadius = '50%';
+        sparkle.style.pointerEvents = 'none';
+        sparkle.style.zIndex = '1001';
+        
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+        
+        sparkle.style.left = x + 'px';
+        sparkle.style.top = y + 'px';
+        
+        document.body.appendChild(sparkle);
+        
+        // Animate sparkle
+        sparkle.animate([
+          { transform: 'scale(0)', opacity: 0 },
+          { transform: 'scale(1)', opacity: 1 },
+          { transform: 'scale(0)', opacity: 0 }
+        ], {
+          duration: 1000 + Math.random() * 1000,
+          easing: 'ease-out'
+        }).onfinish = () => {
+          sparkle.remove();
+        };
+      }
+    }
+
+    // Close popup when clicking overlay
+    document.getElementById('overlay').onclick = function() {
+      document.getElementById('overlay').classList.remove('show');
+      document.getElementById('popup').classList.remove('show');
+    };
+  </script>
+</body>
+</html>
