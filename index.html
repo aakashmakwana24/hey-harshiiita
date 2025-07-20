@@ -10,6 +10,7 @@
       background: #fff;
       font-family: Arial, sans-serif;
       text-align: center;
+      overflow-x: hidden;
     }
 
     h2 {
@@ -91,9 +92,94 @@
       box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(139, 0, 0, 0.3);
     }
 
-    .plucked {
-      transform: translate(-50%, -50%) scale(0) rotate(360deg) !important;
-      opacity: 0;
+    /* Falling animation keyframes */
+    @keyframes fallAndFade {
+      0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+        opacity: 1;
+      }
+      25% {
+        transform: translate(-50%, -30%) rotate(45deg);
+        opacity: 0.8;
+      }
+      50% {
+        transform: translate(-40%, 20%) rotate(135deg);
+        opacity: 0.6;
+      }
+      75% {
+        transform: translate(-20%, 80%) rotate(270deg);
+        opacity: 0.3;
+      }
+      100% {
+        transform: translate(10%, 150%) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fallAndFadeLeft {
+      0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+        opacity: 1;
+      }
+      25% {
+        transform: translate(-70%, -30%) rotate(-45deg);
+        opacity: 0.8;
+      }
+      50% {
+        transform: translate(-90%, 20%) rotate(-135deg);
+        opacity: 0.6;
+      }
+      75% {
+        transform: translate(-110%, 80%) rotate(-270deg);
+        opacity: 0.3;
+      }
+      100% {
+        transform: translate(-130%, 150%) rotate(-360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fallStraight {
+      0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+        opacity: 1;
+      }
+      25% {
+        transform: translate(-50%, -20%) rotate(90deg);
+        opacity: 0.8;
+      }
+      50% {
+        transform: translate(-50%, 30%) rotate(180deg);
+        opacity: 0.6;
+      }
+      75% {
+        transform: translate(-50%, 90%) rotate(270deg);
+        opacity: 0.3;
+      }
+      100% {
+        transform: translate(-50%, 150%) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .falling {
+      pointer-events: none;
+      animation-duration: 2s;
+      animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      animation-fill-mode: forwards;
+      z-index: 10;
+    }
+
+    .falling.fall-right {
+      animation-name: fallAndFade;
+    }
+
+    .falling.fall-left {
+      animation-name: fallAndFadeLeft;
+    }
+
+    .falling.fall-straight {
+      animation-name: fallStraight;
     }
 
     /* Enhanced popup styles from second HTML */
@@ -212,14 +298,28 @@
 
     petals.forEach(petal => {
       petal.addEventListener('click', () => {
-        petal.classList.add('plucked');
+        // Remove hover effect and disable clicking
+        petal.style.cursor = 'default';
+        petal.style.pointerEvents = 'none';
+        
+        // Check if this is the last petal and show message instantly
+        totalPetals--;
+        if (totalPetals === 0) {
+          showMessage();
+        }
+        
+        // Add falling animation class
+        petal.classList.add('falling');
+        
+        // Randomly choose falling direction for variety
+        const fallDirections = ['fall-right', 'fall-left', 'fall-straight'];
+        const randomDirection = fallDirections[Math.floor(Math.random() * fallDirections.length)];
+        petal.classList.add(randomDirection);
+        
+        // Remove petal after animation completes
         setTimeout(() => {
           petal.remove();
-          totalPetals--;
-          if (totalPetals === 0) {
-            showMessage();
-          }
-        }, 400);
+        }, 2000); // Match animation duration
       });
     });
 
